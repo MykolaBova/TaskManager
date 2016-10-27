@@ -6,10 +6,10 @@ import org.rublin.model.Task;
 import java.util.List;
 
 /**
- * ???
+ * Repository provides connections to SQL database to store tasks {@link Task}
  *
  * @author Ruslan Sheremet
- * @see
+ * @see Task
  * @since 1.0
  */
 public interface TaskRepository {
