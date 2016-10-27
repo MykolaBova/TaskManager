@@ -25,4 +25,14 @@ public class Task {
     public void setClosed(boolean closed) {
         this.closed = closed;
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "description='" + description + '\'' +
+                ", time=" + time +
+                ", priority=" + priority +
+                ", closed=" + closed +
+                '}';
+    }
 }
