@@ -26,6 +26,22 @@ public class Task {
         this.closed = closed;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
+
     @Override
     public String toString() {
         return "Task{" +

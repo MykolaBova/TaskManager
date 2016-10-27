@@ -1,5 +1,6 @@
 CREATE SCHEMA `task_manager` ;
-
+DROP TABLE IF EXISTS active_tasks;
+DROP TABLE IF EXISTS closed_tasks;
 CREATE TABLE active_tasks (
   id INT NOT NULL AUTO_INCREMENT,
   description VARCHAR(100) NOT NULL ,
@@ -7,6 +8,7 @@ CREATE TABLE active_tasks (
   time DATETIME NOT NULL ,
   PRIMARY KEY (id)
 );
+
 
 CREATE TABLE closed_tasks (
   id INT NOT NULL AUTO_INCREMENT,

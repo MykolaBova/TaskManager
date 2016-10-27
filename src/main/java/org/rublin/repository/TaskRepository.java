@@ -13,8 +13,9 @@ import java.util.List;
  * @since 1.0
  */
 public interface TaskRepository {
-    Task create(Task task);
-    List<Task> getAllActive();
-    List<Task> getAllClosed();
-    void close(int id) throws TaskNotFoundException;
+    int createTask(Task task);
+    List<Task> getActiveTasks();
+    List<Task> getClosedTasks();
+    void closeTask(int id) throws TaskNotFoundException;
+    void closeRepository();
 }
