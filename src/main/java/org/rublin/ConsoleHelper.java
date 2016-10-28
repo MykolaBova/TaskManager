@@ -18,14 +18,13 @@ import java.time.format.DateTimeFormatter;
  */
 public class ConsoleHelper {
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-    private static String CHOOSE_OPERATION = "Please choose an operation";
-    private static String ADD_TASK = "1 - Add new task";
+    private static final String CHOOSE_OPERATION = "Please choose an operation";
+    private static final String ADD_TASK = "1 - Add new task";
     private static final String SHOW_ACTIVE_TASK = "2 - Show tasks";
     private static final String CLOSE_TASK = "3 - Close task";
     private static final String SHOW_CLOSED_TASK = "4 - Show closed tasks";
     private static final String RETURN = "5 - Return to main menu";
     private static final String EXIT = "0 - Exit";
-//    public static final String
 
     public static final String INVALID = "Please specify valid data";
 
@@ -47,16 +46,20 @@ public class ConsoleHelper {
 
     public static Operation mainMenu() {
         do {
-            writeMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            writeMessage("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             writeMessage(CHOOSE_OPERATION);
             writeMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             writeMessage(ADD_TASK);
             writeMessage(SHOW_ACTIVE_TASK);
             writeMessage("");
             writeMessage(EXIT);
-            writeMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            writeMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             try {
-                return Operation.getOperationByOrdinal(Integer.parseInt(readString()));
+                int command = Integer.parseInt(readString());
+                if (command >=0 && command <= 2)
+                    return Operation.getOperationByOrdinal(command);
+                else
+                    throw new IllegalArgumentException();
             } catch (IllegalArgumentException e) {
                 writeMessage(INVALID);
             }
@@ -64,19 +67,49 @@ public class ConsoleHelper {
     }
     public static Operation taskMenu() {
         do {
-            writeMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            writeMessage("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             writeMessage(CHOOSE_OPERATION);
             writeMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             writeMessage(CLOSE_TASK);
             writeMessage(SHOW_CLOSED_TASK);
             writeMessage(RETURN);
-            writeMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            writeMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             try {
-                return Operation.getOperationByOrdinal(Integer.valueOf(readString()));
+                int command = Integer.parseInt(readString());
+                if (command >=3 && command <= 5)
+                    return Operation.getOperationByOrdinal(command);
+                else
+                    throw new IllegalArgumentException();
             } catch (IllegalArgumentException e) {
                 writeMessage(INVALID);
             }
         } while (true);
 
+    }
+
+    public static String getValidDateTime() {
+        do {
+            writeMessage("Date and Time (for example, 30.01.2016 15:03): ");
+            String result = readString();
+            if (result.matches("\\d{2}\\.\\d{2}\\.\\d{4}\\s\\d{2}\\:\\d{2}"))
+                return result;
+            else
+                writeMessage("Wrong format, please try again");
+        } while (true);
+    }
+
+    public static String getValidPriority() {
+        do {
+            writeMessage("Priority (high, middle, low): ");
+            String result = readString();
+            if (result.toUpperCase().matches("(HIGH|MIDDLE|LOW)"))
+                return result.toUpperCase();
+            else
+                writeMessage("Wrong format, please try again");
+        } while (true);
+    }
+
+    public static void writeInvalidWarning() {
+        writeMessage(INVALID);
     }
 }

@@ -14,6 +14,7 @@ public class Task {
     private LocalDateTime time;
     private Priority priority;
     private boolean closed;
+    private Integer id;
 
     public Task(String description, LocalDateTime time, Priority priority, boolean closed) {
         this.description = description;
@@ -22,8 +23,12 @@ public class Task {
         this.closed = closed;
     }
 
-    public void setClosed(boolean closed) {
+    public Task(Integer id, String description, LocalDateTime time, Priority priority, boolean closed) {
+        this.description = description;
+        this.time = time;
+        this.priority = priority;
         this.closed = closed;
+        this.id = id;
     }
 
     public String getDescription() {
@@ -40,6 +45,10 @@ public class Task {
 
     public boolean isClosed() {
         return closed;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     @Override

@@ -114,6 +114,8 @@ public class JdbcRepository implements TaskRepository {
             while (resultSet.next()) {
                 task = getTask(resultSet, true);
             }
+            if (task == null)
+                throw new TaskNotFoundException();
             statement.executeUpdate(String.format("DELETE FROM %s WHERE id=%d", TABLE_ACTIVE_TASKS, id));
             createTask(task, TABLE_CLOSED_TASKS);
         } catch (SQLException e) {
@@ -156,7 +158,7 @@ public class JdbcRepository implements TaskRepository {
         String description = resultSet.getString("description");
         String priority = resultSet.getString("priority");
         LocalDateTime dateTime = resultSet.getTimestamp("time").toLocalDateTime();
-        return new Task(description, dateTime, Priority.valueOf(priority), closed);
+        return new Task(id, description, dateTime, Priority.valueOf(priority), closed);
     }
 
     /**

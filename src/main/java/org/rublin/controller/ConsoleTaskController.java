@@ -27,37 +27,54 @@ public class ConsoleTaskController implements TaskController {
     public void addTask() {
         ConsoleHelper.writeMessage("Description: ");
         String description = ConsoleHelper.readString();
-        ConsoleHelper.writeMessage("Priority (high, middle, low): ");
-        Priority priority = Priority.valueOf(ConsoleHelper.readString().toUpperCase());
-        ConsoleHelper.writeMessage("Date and Time (for example, 30.01.2016 15:03): ");
-        LocalDateTime dateTime = LocalDateTime.parse(ConsoleHelper.readString(), ConsoleHelper.FORMATTER);
+        Priority priority = Priority.valueOf(ConsoleHelper.getValidPriority());
+        LocalDateTime dateTime = LocalDateTime.parse(ConsoleHelper.getValidDateTime(), ConsoleHelper.FORMATTER);
         if (ConsoleHelper.repository.createTask(new Task(description, dateTime, priority, false)) == -1) {
             ConsoleHelper.writeMessage("Task adding failed");
         } else {
-            ConsoleHelper.writeMessage("Task success added");
+            ConsoleHelper.writeMessage("Task added successfully ");
         }
     }
 
     @Override
     public void showActiveTasks() {
-        ConsoleHelper.writeMessage("### All active tasks ###");
-        ConsoleHelper.repository.getActiveTasks().forEach(task -> ConsoleHelper.writeMessage(String.format("Description: %s; Time: %s; Priority: %s", task.getDescription(), task.getTime().format(ConsoleHelper.FORMATTER), task.getPriority())));
+        ConsoleHelper.writeMessage("#####\tAll active tasks\t#####");
+        ConsoleHelper.repository.getActiveTasks().forEach(task -> ConsoleHelper.writeMessage(taskFormat(task)));
         CommandExecutor.execute(ConsoleHelper.taskMenu());
     }
 
     @Override
     public void closeTask() {
         ConsoleHelper.writeMessage("Type task id");
-        try {
-            ConsoleHelper.repository.closeTask(Integer.valueOf(ConsoleHelper.readString()));
-        } catch (TaskNotFoundException e) {
-            e.printStackTrace();
-        }
+        do {
+            try {
+                ConsoleHelper.repository.closeTask(Integer.valueOf(ConsoleHelper.readString()));
+                break;
+            } catch (TaskNotFoundException e) {
+                ConsoleHelper.writeInvalidWarning();
+                //e.printStackTrace();
+            }
+        } while (true);
+
     }
 
     @Override
     public void showClosedTasks() {
-        ConsoleHelper.writeMessage("### All closed tasks ###");
-        ConsoleHelper.repository.getClosedTasks().forEach(task -> ConsoleHelper.writeMessage(String.format("Description: %s; Time: %s; Priority: %s", task.getDescription(), task.getTime().format(ConsoleHelper.FORMATTER), task.getPriority())));
+        ConsoleHelper.writeMessage("#####\tAll closed tasks\t#####");
+        ConsoleHelper.repository.getClosedTasks().forEach(task -> ConsoleHelper.writeMessage(taskFormat(task)));
+    }
+
+    private String taskFormat(Task task) {
+        LocalDateTime now = LocalDateTime.now();
+        return String.format("id: %d\t" +
+                "\tDescription:\t%s\n" +
+                "\t\t\tTime:\t\t\t%s\n" +
+                "\t\t\tPriority:\t\t%s\n" +
+                "\t\t\t%s\n",
+                task.getId(),
+                task.getDescription(),
+                task.getTime().format(ConsoleHelper.FORMATTER),
+                task.getPriority(),
+                task.isClosed() ? "" : task.getTime().compareTo(now) > 0 ? "" : "EXPIRED");
     }
 }
