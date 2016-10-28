@@ -189,4 +189,16 @@ public class JdbcRepository implements TaskRepository {
         }
         return tasks;
     }
+
+    void executeQuery(String... query) {
+        try {
+            for (int i = 0; i < query.length; i++) {
+                statement.addBatch(query[i]);
+            }
+            statement.executeBatch();
+            connection.commit();
+        } catch (SQLException e) {
+            LOG.error(e.getMessage());
+        }
+    }
 }
