@@ -3,17 +3,18 @@ package org.rublin.command;
 import org.rublin.controller.ConsoleTaskController;
 import org.rublin.controller.TaskController;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * ???
+ * Execute controller method for each operations
  *
  * @author Ruslan Sheremet
- * @see
+ * @see TaskController,Operation
  * @since 1.0
  */
 public class CommandExecutor {
+
+    /**
+     * Using {@link ConsoleTaskController}
+     */
     private static TaskController controller = new ConsoleTaskController();
 
     public static void execute(Operation operation) {
@@ -26,7 +27,6 @@ public class CommandExecutor {
                 break;
             case CLOSE_TASK: controller.closeTask();
                 break;
-            case RETURN: controller.mainMenu();
         }
     }
 }

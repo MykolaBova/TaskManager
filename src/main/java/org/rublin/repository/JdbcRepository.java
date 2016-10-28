@@ -3,6 +3,7 @@ package org.rublin.repository;
 import org.rublin.exception.TaskNotFoundException;
 import org.rublin.model.Priority;
 import org.rublin.model.Task;
+import org.slf4j.Logger;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static org.slf4j.LoggerFactory.getLogger;
 /**
  * Repository provides JDBC connections to SQL database
  *
@@ -20,6 +22,8 @@ import java.util.ResourceBundle;
  * @since 1.0
  */
 public class JdbcRepository implements TaskRepository {
+
+    private static final Logger LOG = getLogger(JdbcRepository.class);
 
     private static final ResourceBundle MYSQL = ResourceBundle.getBundle("db.mysql");
     private static final String DATABASE_NAME = MYSQL.getString("database.dbName");
@@ -72,8 +76,9 @@ public class JdbcRepository implements TaskRepository {
             preparedStatement.setTimestamp(3, Timestamp.valueOf(task.getTime()));
             result = preparedStatement.executeUpdate();
             connection.commit();
+            LOG.info("New task {} created", task);
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
             return -1;
         }
         return result;
@@ -114,17 +119,20 @@ public class JdbcRepository implements TaskRepository {
             while (resultSet.next()) {
                 task = getTask(resultSet, true);
             }
-            if (task == null)
+            if (task == null) {
+                LOG.error("Task with id: {} not found", id);
                 throw new TaskNotFoundException();
+            }
             statement.executeUpdate(String.format("DELETE FROM %s WHERE id=%d", TABLE_ACTIVE_TASKS, id));
             createTask(task, TABLE_CLOSED_TASKS);
+            LOG.info("Task {} closed successfully", task);
         } catch (SQLException e) {
             try {
                 connection.rollback();
             } catch (SQLException e1) {
-                e1.printStackTrace();
+                LOG.error(e1.getMessage());
             }
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
     }
 
@@ -175,8 +183,9 @@ public class JdbcRepository implements TaskRepository {
             while (resultSet.next()) {
                 tasks.add(getTask(resultSet, closed));
             }
+            LOG.debug("Get task list success");
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
         return tasks;
     }

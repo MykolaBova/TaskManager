@@ -2,37 +2,32 @@ package org.rublin.controller;
 
 import org.rublin.ConsoleHelper;
 import org.rublin.command.CommandExecutor;
-import org.rublin.command.Operation;
 import org.rublin.exception.TaskNotFoundException;
 import org.rublin.model.Priority;
 import org.rublin.model.Task;
+import org.slf4j.Logger;
 
 import java.time.LocalDateTime;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 /**
- * ???
+ * Controller for managing tasks using CLI
  *
  * @author Ruslan Sheremet
- * @see
  * @since 1.0
  */
 public class ConsoleTaskController implements TaskController {
 
     @Override
-    public Operation mainMenu() {
-        return null;
-    }
-
-    @Override
     public void addTask() {
-        ConsoleHelper.writeMessage("Description: ");
-        String description = ConsoleHelper.readString();
+        String description = ConsoleHelper.getValidDescription();
         Priority priority = Priority.valueOf(ConsoleHelper.getValidPriority());
-        LocalDateTime dateTime = LocalDateTime.parse(ConsoleHelper.getValidDateTime(), ConsoleHelper.FORMATTER);
+        LocalDateTime dateTime = ConsoleHelper.getValidDateTime();
         if (ConsoleHelper.repository.createTask(new Task(description, dateTime, priority, false)) == -1) {
-            ConsoleHelper.writeMessage("Task adding failed");
+            ConsoleHelper.writeOperationFailedMessage();
         } else {
-            ConsoleHelper.writeMessage("Task added successfully ");
+            ConsoleHelper.writeOperationOkMessage();
         }
     }
 
@@ -48,7 +43,7 @@ public class ConsoleTaskController implements TaskController {
         ConsoleHelper.writeMessage("Type task id");
         do {
             try {
-                ConsoleHelper.repository.closeTask(Integer.valueOf(ConsoleHelper.readString()));
+                ConsoleHelper.repository.closeTask(ConsoleHelper.getValidInt());
                 break;
             } catch (TaskNotFoundException e) {
                 ConsoleHelper.writeInvalidWarning();
@@ -64,6 +59,12 @@ public class ConsoleTaskController implements TaskController {
         ConsoleHelper.repository.getClosedTasks().forEach(task -> ConsoleHelper.writeMessage(taskFormat(task)));
     }
 
+    /**
+     * Formatting message to display for user
+     *
+     * @param task
+     * @return
+     */
     private String taskFormat(Task task) {
         LocalDateTime now = LocalDateTime.now();
         return String.format("id: %d\t" +

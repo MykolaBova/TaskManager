@@ -7,13 +7,13 @@ import org.rublin.repository.TaskRepository;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * ???
+ * Communicate with user using console.
  *
  * @author Ruslan Sheremet
- * @see
  * @since 1.0
  */
 public class ConsoleHelper {
@@ -26,7 +26,9 @@ public class ConsoleHelper {
     private static final String RETURN = "5 - Return to main menu";
     private static final String EXIT = "0 - Exit";
 
-    public static final String INVALID = "Please specify valid data";
+    private static final String INVALID = "Please specify valid data";
+    private static final String OK = "Operation successful";
+    private static final String FAIL = "Operation failed";
 
     public static TaskRepository repository = JdbcRepository.getRepository();
 
@@ -55,7 +57,7 @@ public class ConsoleHelper {
             writeMessage(EXIT);
             writeMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             try {
-                int command = Integer.parseInt(readString());
+                int command = getValidInt();
                 if (command >=0 && command <= 2)
                     return Operation.getOperationByOrdinal(command);
                 else
@@ -75,7 +77,7 @@ public class ConsoleHelper {
             writeMessage(RETURN);
             writeMessage("~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             try {
-                int command = Integer.parseInt(readString());
+                int command = getValidInt();
                 if (command >=3 && command <= 5)
                     return Operation.getOperationByOrdinal(command);
                 else
@@ -87,14 +89,24 @@ public class ConsoleHelper {
 
     }
 
-    public static String getValidDateTime() {
+    public static int getValidInt() {
+        do {
+            String result = readString();
+            if (result.matches("\\d+"))
+                return Integer.valueOf(result);
+            else
+                writeInvalidWarning();
+        } while (true);
+    }
+
+    public static LocalDateTime getValidDateTime() {
         do {
             writeMessage("Date and Time (for example, 30.01.2016 15:03): ");
             String result = readString();
             if (result.matches("\\d{2}\\.\\d{2}\\.\\d{4}\\s\\d{2}\\:\\d{2}"))
-                return result;
+                return LocalDateTime.parse(result, FORMATTER);
             else
-                writeMessage("Wrong format, please try again");
+                writeInvalidWarning();
         } while (true);
     }
 
@@ -105,11 +117,24 @@ public class ConsoleHelper {
             if (result.toUpperCase().matches("(HIGH|MIDDLE|LOW)"))
                 return result.toUpperCase();
             else
-                writeMessage("Wrong format, please try again");
+                writeInvalidWarning();
         } while (true);
     }
 
     public static void writeInvalidWarning() {
         writeMessage(INVALID);
+    }
+
+    public static String getValidDescription() {
+        writeMessage("Description: ");
+        return ConsoleHelper.readString();
+    }
+
+    public static void writeOperationOkMessage() {
+        writeMessage(OK);
+    }
+
+    public static void writeOperationFailedMessage() {
+        writeMessage(FAIL);
     }
 }

@@ -3,10 +3,14 @@ package org.rublin.model;
 import java.time.LocalDateTime;
 
 /**
- * ???
+ * Task include id {@link Integer},
+ *              description {@link String},
+ *              priority {@link Priority},
+ *              closed {@link Boolean} - true if task is closed and false if not
  *
  * @author Ruslan Sheremet
- * @see
+ * @see LocalDateTime
+ * @see Priority
  * @since 1.0
  */
 public class Task {
