@@ -1,7 +1,9 @@
 package org.rublin.controller;
 
 import org.rublin.ConsoleHelper;
+import org.rublin.command.CommandExecutor;
 import org.rublin.command.Operation;
+import org.rublin.exception.TaskNotFoundException;
 import org.rublin.model.Priority;
 import org.rublin.model.Task;
 
@@ -40,11 +42,17 @@ public class ConsoleTaskController implements TaskController {
     public void showActiveTasks() {
         ConsoleHelper.writeMessage("### All active tasks ###");
         ConsoleHelper.repository.getActiveTasks().forEach(task -> ConsoleHelper.writeMessage(String.format("Description: %s; Time: %s; Priority: %s", task.getDescription(), task.getTime().format(ConsoleHelper.FORMATTER), task.getPriority())));
+        CommandExecutor.execute(ConsoleHelper.taskMenu());
     }
 
     @Override
     public void closeTask() {
-
+        ConsoleHelper.writeMessage("Type task id");
+        try {
+            ConsoleHelper.repository.closeTask(Integer.valueOf(ConsoleHelper.readString()));
+        } catch (TaskNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
