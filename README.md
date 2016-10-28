@@ -1,7 +1,7 @@
 #  Task manager
 ### Version is *1.0-SNAPSHOT*
 
-Console task manager is a test task for ProgForce. Store tasks in *MySQL* database
+Console task manager is a test task for [ProgForce](http://progforce.com.ua). Store tasks in *MySQL* database
 
 ### Features:
 
@@ -13,7 +13,7 @@ Console task manager is a test task for ProgForce. Store tasks in *MySQL* databa
 
 ### CLI:
 
-```java
+```
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Please choose an operation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
